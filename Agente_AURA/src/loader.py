@@ -1,13 +1,8 @@
 from langchain_community.document_loaders import CSVLoader
 
-
-def cargar_documentos(path_csv):
-    """
-    Carga el archivo CSV y devuelve una lista de documentos.
-    """
-
+def cargar_documentos(ruta_csv):
     loader = CSVLoader(
-        file_path=path_csv,
+        file_path=str(ruta_csv),
         encoding="utf-8"
     )
 
