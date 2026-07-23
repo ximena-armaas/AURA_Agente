@@ -13,9 +13,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-csv_path = BASE_DIR / "rag_base.csv"
+ruta_csv = BASE_DIR / "rag_base.csv"
 
-documentos = cargar_documentos(csv_path)
+documentos = cargar_documentos(ruta_csv)
 
 # 2. Dividir documentos
 chunks = dividir_documentos(documentos)
