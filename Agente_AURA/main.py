@@ -6,9 +6,16 @@ from src.retriever import crear_retriever
 from src.chat import crear_chat
 from src.prompt import crear_prompt
 from src.agent import crear_agente
+from pathlib import Path
 
 # 1. Cargar documentos
-documentos = cargar_documentos("rag_base.csv")
+
+
+BASE_DIR = Path(__file__).resolve().parent
+
+csv_path = BASE_DIR / "rag_base.csv"
+
+documentos = cargar_documentos(csv_path)
 
 # 2. Dividir documentos
 chunks = dividir_documentos(documentos)
