@@ -178,7 +178,7 @@ Antes de ejecutar el proyecto es necesario contar con:
 Clonar el repositorio utilizando Git:
 
 ```bash
-git clone https://github.com/usuario/AURA-Asistente-Clinica.git
+git clone https://github.com/ximena-armaas/AURA_Agente.git
 ```
 
 ---
@@ -298,14 +298,6 @@ AURA puede responder preguntas frecuentes como:
 ### Consulta
 
 ```
-¿Cuáles son sus horarios de atención?
-```
-
----
-
-### Consulta
-
-```
 ¿Qué documentos necesito para mi primera consulta?
 ```
 
@@ -335,15 +327,23 @@ AURA puede responder preguntas frecuentes como:
 
 # 🚀 Despliegue
 
-AURA puede ser desplegado en plataformas cloud permitiendo que pacientes y usuarios interactúen con el asistente mediante una interfaz web.
+Actualmente, **AURA** se encuentra desplegado en **Streamlit Cloud**, por lo que puede utilizarse directamente desde el siguiente enlace:
 
-La arquitectura implementada permite escalar la solución mediante:
+**https://auraagente-mju5v29y4x3esgef2hejvy.streamlit.app/**
 
-- Actualización de la base documental.
-- Incorporación de nuevas fuentes de información.
-- Ampliación de categorías de consultas frecuentes.
+El proyecto incluye dos formas de ejecución:
 
-Estas mejoras pueden realizarse sin modificar la lógica principal del sistema.
+- **Modo Streamlit** (implementación actual): utilizado para el despliegue web y la interacción mediante una interfaz gráfica.
+- **Modo consola (Python)**: permite ejecutar el agente de forma local desde la terminal.
+
+Ambos modos ya se encuentran implementados dentro del archivo **`main.py`**. Actualmente, el código correspondiente a la ejecución en **Streamlit** es el que está habilitado, mientras que la versión para **Python por consola** permanece comentada.
+
+Para ejecutar el proyecto de forma local desde la terminal únicamente es necesario:
+
+1. Comentar el bloque correspondiente a **Streamlit**.
+2. Descomentar el bloque correspondiente a la ejecución por **Python**.
+
+No es necesario realizar cambios adicionales en la lógica del proyecto, ya que ambos modos comparten la misma arquitectura y componentes internos.
 
 ---
 
