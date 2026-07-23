@@ -1,3 +1,6 @@
+import streamlit as st
+from pathlib import Path
+
 from src.loader import cargar_documentos
 from src.splitter import dividir_documentos
 from src.embeddings import crear_embeddings
@@ -6,66 +9,104 @@ from src.retriever import crear_retriever
 from src.chat import crear_chat
 from src.prompt import crear_prompt
 from src.agent import crear_agente
-from pathlib import Path
-
-# 1. Cargar documentos
 
 
-BASE_DIR = Path(__file__).resolve().parent
-
-ruta_csv = BASE_DIR / "rag_base.csv"
-
-documentos = cargar_documentos(ruta_csv)
-
-# 2. Dividir documentos
-chunks = dividir_documentos(documentos)
-
-# 3. Crear embeddings
-embeddings = crear_embeddings()
-
-# 4. Crear FAISS
-vectorstore = crear_vectorstore(chunks, embeddings)
-
-# 5. Crear retriever
-retriever = crear_retriever(vectorstore)
-
-# 6. Crear modelo de chat
-chat = crear_chat()
-
-# 7. Crear prompt
-prompt = crear_prompt()
-
-# 8. Crear cadena RAG
-agente = crear_agente(chat, retriever, prompt)
-
-print("=" * 60)
-print("💙✨ AURA 💙✨")
-print("AURA, tu asistente inteligente para acompañarte en cada consulta.")
-print("=" * 60)
-print("Escribe 'Gracias' para finalizar la conversación.\n")
-
-while True:
-
-    pregunta = input("👤 Tu pregunta: ")
-
-    if not pregunta.strip():
-        print("\n⚠️ Por favor escribe una consulta.\n")
-        continue
+st.set_page_config(
+    page_title="AURA",
+    page_icon="💙",
+    layout="wide"
+)
 
 
-    if "gracias" in pregunta.lower():
-        print("\n💙✨ Gracias por usar AURA, tu asistente inteligente para acompañarte en cada consulta.")
-        print("¡Hasta pronto!")
-        break
-    try:
-        respuesta = agente.invoke(pregunta)
+@st.cache_resource(show_spinner="Preparando AURA...")
+def cargar_agente():
 
-        print("\n 💙✨ AURA 💙✨: \n")
-        print(respuesta)
+    base_dir = Path(__file__).resolve().parent
+    ruta_csv = base_dir / "rag_base.csv"
 
-    except Exception as e:
-        print("\n⚠️ Ocurrió un error al procesar tu consulta.")
-        print("Por favor, intenta nuevamente.")
-        
+    # 1. Cargar documentos
+    documentos = cargar_documentos(ruta_csv)
 
-    print("\n" + "-" * 60 + "\n")
+    # 2. Dividir documentos
+    chunks = dividir_documentos(documentos)
+
+    # 3. Crear embeddings
+    embeddings = crear_embeddings()
+
+    # 4. Crear vectorstore
+    vectorstore = crear_vectorstore(chunks, embeddings)
+
+    # 5. Crear retriever
+    retriever = crear_retriever(vectorstore)
+
+    # 6. Modelo
+    chat = crear_chat()
+
+    # 7. Prompt
+    prompt = crear_prompt()
+
+    # 8. Agente
+    return crear_agente(chat, retriever, prompt)
+
+
+agente = cargar_agente()
+
+
+st.title("💙✨ AURA")
+st.caption("Tu asistente inteligente para acompañarte en cada consulta.")
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": "¡Hola! 😊 Soy **AURA**. ¿En qué puedo ayudarte hoy?"
+        }
+    ]
+
+
+for mensaje in st.session_state.messages:
+    with st.chat_message(mensaje["role"]):
+        st.markdown(mensaje["content"])
+
+
+pregunta = st.chat_input("Escribe tu pregunta...")
+
+
+if pregunta:
+
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": pregunta
+        }
+    )
+
+    with st.chat_message("user"):
+        st.markdown(pregunta)
+
+    with st.chat_message("assistant"):
+
+        with st.spinner("Pensando..."):
+
+            try:
+                respuesta = agente.invoke(pregunta)
+
+                st.markdown(respuesta)
+
+                st.session_state.messages.append(
+                    {
+                        "role": "assistant",
+                        "content": respuesta
+                    }
+                )
+
+            except Exception as e:
+
+                mensaje_error = (
+                    "Lo siento, ocurrió un error al procesar tu consulta."
+                )
+
+                st.error(mensaje_error)
+
+                st.exception(e)
