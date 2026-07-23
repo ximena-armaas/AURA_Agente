@@ -7,7 +7,7 @@ def cargar_documentos(path_csv):
     """
 
     loader = CSVLoader(
-        file_path=ruta_csv,
+        file_path=path_csv,
         encoding="utf-8"
     )
 
